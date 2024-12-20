@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    restart: always
+    networks:
+      - backend
+
+  api:
+    build:
+      context: ./api  # Ruta del Dockerfile de tu API
+    container_name: api
+    restart: always
+    environment:
+      MONGO_URI: mongodb://root:examplepassword@mongodb:27017/mi_base_de_datos
+    ports:
+      - "5000:5000"  # Expone la API en el puerto 5000 (accesible desde la red local)
+    depends_on:
+      - mongodb
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge  # Red interna para comunicar API y MongoDB
